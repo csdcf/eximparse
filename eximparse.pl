@@ -2,16 +2,24 @@
 #
 
 use strict;
+use Data::Dumper; 
 
 
-open ( FILE, '/Users/abiheiri/Downloads/tmp.abiheiri/maillog.1');
+my $filename = "/Users/abiheiri/Downloads/tmp.abiheiri/maillog.1";
+open my $fh, "<", $filename or die "could not open $filename: $!";
 
-my $data = <FILE>;
-my %values = split(/ /,$data);
+my %count_reject;
 
-#print $data, "\n";
-
-while ((my $month, my $day, my $time) = each(%values))
+while (<$fh>)
 {
-	print $month.", ".$day, "\n";
+	my ($k) = / rejected/;
+	if (defined $k) 
+	{
+		$count_reject{$k}++;
+	}
+}
+
+for my $k (keys %count_reject)
+{
+	    print "We have rejected mail  $count_reject{$k} times\n";
 }
