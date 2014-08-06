@@ -26,6 +26,6 @@ while (<>)
 
 print
         "-" x 20, "+", "-" x 40, "\n",
-	"Total rejected mail | Total rejected because of spamhause.org\n",
+	"Total rejected mail | Total rejected ala spamhaus.org\n",
         "-" x 20, "+", "-" x 40, "\n",
 	sprintf "%19d | %39d\n", $counts{" rejected"}, $counts{spamhaus};	
