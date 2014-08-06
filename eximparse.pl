@@ -1,7 +1,7 @@
-#!//usr/bin/env perl -w
-#
+#!//usr/bin/env perl
 
 use strict;
+use warnings;
 use Data::Dumper; 
 
 #this is to protect myself
@@ -15,28 +15,17 @@ use Data::Dumper;
 my %count_reject;
 my %count_spamhaus;
 
+my %counts;
+
 while (<>)
 {
-	my ($k_reject) = / rejected/;
-	my ($k_spamhaus) = /spamhaus/;
-
-	if (defined $k_reject) 
-	{
-		$count_reject{$k_reject}++;
-	}
-
-	if (defined $k_spamhaus) 
-	{
-		$count_spamhaus{$k_spamhaus}++;
+        for my $match (/( rejected|spamhaus)/g) {
+		$counts{$match}++
 	}
 }
 
-for my $k_reject (keys %count_reject)
-{
-	    print "Total Rejected Mail: $count_reject{$k_reject}\n";
-}
-
-for my $k_spamhaus (keys %count_spamhaus)
-{
-	    print "Total rejected because of spamhaus.org $count_spamhaus{$k_spamhaus}\n";
-}
+print
+        "-" x 20, "+", "-" x 40, "\n",
+	"Total rejected mail | Total rejected because of spamhause.org\n",
+        "-" x 20, "+", "-" x 40, "\n",
+	sprintf "%19d | %39d\n", $counts{" rejected"}, $counts{spamhaus};	
