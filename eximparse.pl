@@ -12,7 +12,6 @@ use Data::Dumper;
 #my $filename = "/Users/abiheiri/Downloads/tmp.abiheiri/maillog.1";
 #open my $fh, "<", $filename or die "could not open $filename: $!";
 
-
 my %c;
 
 print "Generating a report, hold your horses...\n";
@@ -32,17 +31,22 @@ while (<>)
 
 print <<EOF
 
-|================================|
-|	EXIM REPORT		 |
-|================================|
-
-Total mail sent: $c{"=>"}
-Total mail recieved $c{"<="}
-
-Total mail rejected: $c{" rejected"}
-Total mail unsolicited: $c{unsolicited}
-
-Number of times Google rate limited us: $c{"rate limited"}
-Numbet of mail rejected because it was in spamhaus.org list: $c{spamhaus}
+|=======================================================|
+|			EXIM REPORT			|
+|=======================================================|
+|Total mail sent 		|$c{"=>"}		|
+|-------------------------------|-----------------------|
+|Total mail recieved 		|$c{"<="}		|
+|-------------------------------|-----------------------|
+|Total unsolicited mail		|$c{unsolicited}	|
+|-------------------------------|-----------------------|
+|Total mail rejected		|$c{" rejected"}	|
+|-------------------------------|-----------------------|
+|Number of mail rejected	|$c{spamhaus}		|
+|because it was in spamhaus.org	|			|
+|-------------------------------|-----------------------|
+|Number of times Google		|$c{"rate limited"}	|
+|rate limited us		|		   	|
+|===============================|=======================|
 
 EOF
