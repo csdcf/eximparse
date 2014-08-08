@@ -3,6 +3,7 @@
 use strict;
 use warnings;
 use Data::Dumper; 
+use POSIX qw/strftime/;
 
 #this is to protect myself
 #if a file has a name like "!rm -rf ~" it WILL delete your home directory
@@ -13,13 +14,22 @@ use Data::Dumper;
 #open my $fh, "<", $filename or die "could not open $filename: $!";
 
 my %c;
+my %ip;
+
+my $date=(strftime('%D %T',localtime));
 
 print "Generating a report, hold your horses...\n";
 
 while (<>)
 {
-        for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=)/g) {
-		$c{$match}++
+        for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|frozen)/g)
+       	{
+		$c{lc $match}++
+	}
+
+	for my $recieved_address (/<=.*[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/g)
+	{
+		$ip{$recieved_address}++
 	}
 }
 
@@ -29,23 +39,27 @@ while (<>)
 #        "-" x 20, "+", "-" x 40,"\n",
 #	sprintf "%19d | %39d \n", $counts{" rejected"}, $counts{spamhaus};	
 
+
 print <<EOF
 
 |=======================================================|
 |			EXIM REPORT			|
+|			$date
 |=======================================================|
-|Total mail sent 		|$c{"=>"}		|
+|Total mail sent 		|$c{"=>"}
 |-------------------------------|-----------------------|
-|Total mail recieved 		|$c{"<="}		|
+|Total mail recieved 		|$c{"<="}
 |-------------------------------|-----------------------|
-|Total unsolicited mail		|$c{unsolicited}	|
+|Total frozen mail 		|$c{"frozen"}
 |-------------------------------|-----------------------|
-|Total mail rejected		|$c{" rejected"}	|
+|Total unsolicited mail		|$c{unsolicited}
 |-------------------------------|-----------------------|
-|Number of mail rejected	|$c{spamhaus}		|
+|Total mail rejected		|$c{" rejected"}
+|-------------------------------|-----------------------|
+|Number of mail rejected	|$c{spamhaus}
 |because it was in spamhaus.org	|			|
 |-------------------------------|-----------------------|
-|Number of times Google		|$c{"rate limited"}	|
+|Number of times Google		|$c{"rate limited"}
 |rate limited us		|		   	|
 |===============================|=======================|
 
