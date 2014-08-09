@@ -13,24 +13,44 @@ use POSIX qw/strftime/;
 #my $filename = "/Users/abiheiri/Downloads/tmp.abiheiri/maillog.1";
 #open my $fh, "<", $filename or die "could not open $filename: $!";
 
-my %c;
-my %ip;
 
-my $date=(strftime('%D %T',localtime));
+my $ip_octect = qr{
+    [0-9]       |  #match 0 - 9
+    [1-9][0-9] |   # match 10 - 99
+    1[0-9][0-9] | # match 100 - 999
+    2[0-4][0-9] | # match 200 - 249
+    25[0-5]     | # match 250 - 255
+}x;
+
+my $ip_adder  = qr{
+    \b  # word boundary
+    $ip_octect
+    (?:
+        [.]
+        $ip_octect
+    ){3}
+    \b  # another word boundary
+}x;
+
+my %c;
+my %recieved_addresses;
+
+my $date= strftime '%D %T', localtime;
 
 print "Generating a report, hold your horses...\n";
 
 while (<>)
 {
-        for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|frozen)/g)
-       	{
-		$c{lc $match}++
-	}
-
-	for my $recieved_address (/<=.*[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}/g)
-	{
-		$ip{$recieved_address}++
-	}
+        for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|[fF]rozen)/g)
+        {
+                $match = lc $match;
+                $c{$match}++;
+                if ($match eq "<=") 
+		{
+                    my $recieved_address = /<=.*?($ip_adder)/;
+                    $recieved_adresses{$recieved_address}++;
+                }
+        }
 }
 
 #print
