@@ -86,7 +86,7 @@ while (<>)
 #       sprintf "%19d | %39d \n", $counts{" rejected"}, $counts{spamhaus};      
 
 
-print <<EOF
+print <<EOF;
 
 |=======================================================|
 |                       EXIM REPORT                     |
@@ -107,7 +107,21 @@ print <<EOF
 |-------------------------------|-----------------------|
 |Number of times Google         |$c{"rate limited"}
 |rate limited us                |                       |
-|===============================|=======================|
-
+|=======================================================|
+|							|
 EOF
+
+
+print <<EOF;
+|=======================================================|
+|        Top received mail from IP addresses            |
+|=======================================================|
+EOF
+
+#sorting and organizing the exim top recieved ips
+#Putting b first will cause out to be sorted highest to lowest
+my @received_addr = sort { $received_addresses{$b} <=> $received_addresses{$a} } keys %received_addresses;
+#map { "$_\n" } @received_addr;
+my $i; for my $item (@received_addr) { print $item, "\n"; last if ++$i == 20; }
+
 
