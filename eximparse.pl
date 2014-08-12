@@ -40,13 +40,14 @@ my $ip_adder  = qr{
         [.]
         $ip_octect
     ){3}
-    \b  # another word boundary
+    \b  # word boundary
 }x;
 
 
 #variables use for the data collection
 my %c;
 my %received_addresses;
+my %deliver_addresses;
 
 #creating the date variable
 my $date= strftime '%D %T', localtime;
@@ -79,6 +80,16 @@ while (<>)
                         $received_addresses{$received_address}++;
                     }
                 }
+
+                if ($match eq "=>")
+                {
+                    if (my ($deliver_address) = /=>.*?($ip_adder)/)
+                    {
+			$deliver_address ||= "local";
+                        $deliver_addresses{$deliver_address}++;
+                    }
+                }
+
         }
 }
 
@@ -103,7 +114,7 @@ print <<EOF;
 |-------------------------------|-----------------------|
 |Total mail recieved            |$c{"<="}
 |-------------------------------|-----------------------|
-|Total frozen mail              |$c{"frozen"}
+|Total frozen mail messages     |$c{"frozen"}
 |-------------------------------|-----------------------|
 |Total unsolicited mail         |$c{unsolicited}
 |-------------------------------|-----------------------|
@@ -118,7 +129,7 @@ print <<EOF;
 |							|
 |							|
 |=======================================================|
-|        Top 20 received mail from IP addresses         |
+|        Top 20 RECEIVED mail FROM ip addresses         |
 |=======================================================|
 |Number of Times => IP Address				|
 EOF
@@ -129,4 +140,13 @@ my @received_addr = sort { $received_addresses{$b} <=> $received_addresses{$a} }
 #the print portion has a preceding "|" so it lines ip with the EOF chart 
 my $i; for my $item (@received_addr) { print  "|$received_addresses{$item} => $item\n"; last if ++$i == 20; }
 
+print <<EOF;
+|							|
+|=======================================================|
+|        Top 20 DELIVERED mail TO ip addresses 	        |
+|=======================================================|
+|Number of Times => IP Address				|
+EOF
+my @deliver_addr = sort { $deliver_addresses{$b} <=> $deliver_addresses{$a} } keys %deliver_addresses;
+my $d; for my $item (@deliver_addr) { print  "|$deliver_addresses{$item} => $item\n"; last if ++$d == 20; }
 
