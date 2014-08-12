@@ -13,6 +13,12 @@ use POSIX qw/strftime/;
 #my $filename = "/Users/abiheiri/Downloads/tmp.abiheiri/maillog.1";
 #open my $fh, "<", $filename or die "could not open $filename: $!";
 
+#did a person run this without any arguments?
+#lets tell them so
+unless (@ARGV) 
+{
+	die "please specify the path to the exim log file. You can specify more than one path at a time\n";
+}
 
 #submodule logic for capturing ip address
 my $ip_octect = qr{
@@ -109,10 +115,7 @@ print <<EOF;
 |rate limited us                |                       |
 |=======================================================|
 |							|
-EOF
-
-
-print <<EOF;
+|							|
 |=======================================================|
 |        Top received mail from IP addresses            |
 |=======================================================|
