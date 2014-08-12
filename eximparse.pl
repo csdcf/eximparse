@@ -13,11 +13,9 @@ use POSIX qw/strftime/;
 #my $filename = "/Users/abiheiri/Downloads/tmp.abiheiri/maillog.1";
 #open my $fh, "<", $filename or die "could not open $filename: $!";
 
-#did a person run this without any arguments?
-#lets tell them so
 unless (@ARGV) 
 {
-	die "please specify the path to the exim log file. You can specify more than one path at a time\n";
+	die "USAGE: $0 /pathto/exim.log /pathto/exim.log2\n";
 }
 
 #submodule logic for capturing ip address
@@ -29,8 +27,12 @@ my $ip_octect = qr{
     25[0-5]     | # match 250 - 255
 }x;
 
-#submodile for creating a word boundry so
-#that I captire only the ip address
+#submodile for creating a word boundry so that I capture only the ip address
+#octet.octet.octect.octet 
+#but .octect occurs three times
+#qr// makes compiled regexes
+#(?:) is a way to group multiple atoms as one
+#perldoc perlre
 my $ip_adder  = qr{
     \b  # word boundary
     $ip_octect
@@ -40,7 +42,6 @@ my $ip_adder  = qr{
     ){3}
     \b  # another word boundary
 }x;
-
 
 
 #variables use for the data collection
@@ -117,14 +118,15 @@ print <<EOF;
 |							|
 |							|
 |=======================================================|
-|        Top received mail from IP addresses            |
+|        Top 20 received mail from IP addresses         |
 |=======================================================|
+|Number of Times => IP Address				|
 EOF
 
 #sorting and organizing the exim top recieved ips
 #Putting b first will cause out to be sorted highest to lowest
 my @received_addr = sort { $received_addresses{$b} <=> $received_addresses{$a} } keys %received_addresses;
-#map { "$_\n" } @received_addr;
-my $i; for my $item (@received_addr) { print $item, "\n"; last if ++$i == 20; }
+#the print portion has a preceding "|" so it lines ip with the EOF chart 
+my $i; for my $item (@received_addr) { print  "|$received_addresses{$item} => $item\n"; last if ++$i == 20; }
 
 
