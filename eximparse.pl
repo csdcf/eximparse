@@ -1,11 +1,13 @@
 #!/usr/bin/env perl
+#
+# 2014 - Al Biheiri
 
 use strict;
 use warnings;
 use Data::Dumper;
 use POSIX qw/strftime/;
 
-#this is to protect myself
+#below can be used to protect myself
 #if a file has a name like "!rm -rf ~" it WILL delete your home directory
 #use ARGV::readonly
 
@@ -17,6 +19,9 @@ unless (@ARGV)
 {
 	die "USAGE: $0 /pathto/exim.log /pathto/exim.log2\n";
 }
+
+#get file sizes to tell user
+print map { "Size of $_: " . -s . "\n" } @ARGV;
 
 #submodule logic for capturing ip address
 my $ip_octect = qr{
@@ -149,4 +154,14 @@ print <<EOF;
 EOF
 my @deliver_addr = sort { $deliver_addresses{$b} <=> $deliver_addresses{$a} } keys %deliver_addresses;
 my $d; for my $item (@deliver_addr) { print  "|$deliver_addresses{$item} => $item\n"; last if ++$d == 20; }
+
+#return total time it took to run this script
+my ($user,$system,$cuser,$csystem) = times;
+print <<EOF;
+|							|
+|=======================================================|
+| Total processing time in seconds: $user
+|=======================================================|
+EOF
+
 
