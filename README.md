@@ -9,8 +9,6 @@ todo:
 
 how many messages received/delivered per hour
 
-Time spent on the queue: all messages
-
 Top XX sending hosts by volume
 
 Top XX host destinations by volume

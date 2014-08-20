@@ -64,16 +64,30 @@ print "Generating a report, hold your horses... (aprx 120sec/per 800M) \n";
 
 # Collecting data
 #
+my $old_file_name = "";
+my $last_date;
 while (<>)
 {
-	#string match
-	#variable for log start and end date
-	#without the paranthesis for the variable, it will return scalar value.
-	# scalar, 1 or undefs is returned (depending on whether it matched or not)
-	#my ($startdate) = /([A-Z][a-z]{2} +[0-9]+)/;
-	#print $startdate;
+        #variable for log start and end date
+        #without the paranthesis for the variable, it will return scalar value.
+        # scalar, 1 or undefs is returned (depending on whether it matched or not)
+        my ($date) = /([A-Z][a-z]{2} +[0-9]+)/;
+        
+        # run this everytime the file changes
+        unless ($old_file_name eq $ARGV)
+	{
+            # don't run this for the first file
+            unless ($old_file_name eq "")
+		{
+			print "$ARGV ends on $last_date\n";
+		}
+            print "$ARGV starts on $date\n";
+        }
+        $old_file_name = $ARGV;
+        $last_date = $date;
 
-        for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|[fF]rozen)/g)
+        #string match
+	for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|[fF]rozen)/g)
         {
 		#lower case all matches for consistency
                 $match = lc $match;
@@ -106,6 +120,7 @@ while (<>)
         }
 }
 
+print "$ARGV ends on $last_date\n";
 
 #
 #this was too much effort and not flexible
