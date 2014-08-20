@@ -9,6 +9,7 @@ use POSIX qw/strftime/;
 
 #below can be used to protect myself
 #if a file has a name like "!rm -rf ~" it WILL delete your home directory
+#currently turned off because it requires a seperate package
 #use ARGV::readonly
 
 
@@ -54,10 +55,11 @@ my %c;
 my %received_addresses;
 my %deliver_addresses;
 
+
 #creating the date variable
 my $date= strftime '%D %T', localtime;
 
-print "Generating a report, hold your horses...\n";
+print "Generating a report, hold your horses... (aprx 120sec/per 800M) \n";
 
 
 # Collecting data
@@ -65,6 +67,12 @@ print "Generating a report, hold your horses...\n";
 while (<>)
 {
 	#string match
+	#variable for log start and end date
+	#without the paranthesis for the variable, it will return scalar value.
+	# scalar, 1 or undefs is returned (depending on whether it matched or not)
+	#my ($startdate) = /([A-Z][a-z]{2} +[0-9]+)/;
+	#print $startdate;
+
         for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|[fF]rozen)/g)
         {
 		#lower case all matches for consistency
@@ -115,15 +123,15 @@ print <<EOF;
 |                       EXIM REPORT                     |
 |                       $date
 |=======================================================|
-|Total mail sent                |$c{"=>"}
+|mail sent                	|$c{"=>"}
 |-------------------------------|-----------------------|
-|Total mail recieved            |$c{"<="}
+|mail recieved            	|$c{"<="}
 |-------------------------------|-----------------------|
-|Total frozen mail messages     |$c{"frozen"}
+|frozen mail messages    	|$c{"frozen"}
 |-------------------------------|-----------------------|
-|Total unsolicited mail         |$c{unsolicited}
+|unsolicited mail       	|$c{unsolicited}
 |-------------------------------|-----------------------|
-|Total mail rejected            |$c{" rejected"}
+|mail rejected		        |$c{" rejected"}
 |-------------------------------|-----------------------|
 |Number of mail rejected        |$c{spamhaus}
 |because it was in spamhaus.org |                       |
