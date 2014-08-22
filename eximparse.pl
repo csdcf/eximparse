@@ -121,9 +121,10 @@ while (<>)
 		#each message has an ID associated with it, capture uniq data and determine how many are frozen messages
 		if ($match =~ /[fF]rozen/)
 		{
-			if (my ($keys) = /.{6}\-.{6}\-.{2}/)
+			if (my ($id) = /(.{6}\-.{6}\-.{2})/)
 			{
-				$message_ids{$keys}++;
+				$message_ids{$id}++;
+				#print Dumper \%message_ids, "\n";
 		
 			}
 		}
