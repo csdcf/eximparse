@@ -52,9 +52,10 @@ my $ip_adder  = qr{
 
 #variables use for the data collection
 my %c;
+my %message_ids;
+my %spam_hostname;
 my %hash_raddr;
 my %hash_daddr;
-my %message_ids;
 
 
 #creating the date variable
@@ -128,11 +129,25 @@ while (<>)
 		
 			}
 		}
+		
+		#who are the top spamhaus hosts?
+		if ($match eq "spamhaus")
+		{
+			if (my ($spamgroup) = /(H=(.*?)[ ])/)
+			{
+				$spam_hostname{$spamgroup}++;
+			#	print Dumper \%spam_hostname, "\n";
+			}
+		}
+
         }
 }
 
 #sum the message_ids
 my $unique_message_id_count = keys %message_ids;
+
+#sum the spamhaus
+my $unique_spamhaus_count = keys %spam_hostname;
 
 #part of reading the log file and determining what the last date of the log is
 #its placed here so that it is printed on screen after the whole log is parsed first (the while statement above).
@@ -164,7 +179,7 @@ print <<EOF;
 |-------------------------------|-----------------------|
 |mail rejected		        |$c{" rejected"}
 |-------------------------------|-----------------------|
-|Number of mail rejected        |$c{spamhaus}
+|Number of mail rejected        |$unique_spamhaus_count
 |because it was in spamhaus.org |                       |
 |-------------------------------|-----------------------|
 |Number of times Google         |$c{"rate limited"}
@@ -193,6 +208,18 @@ print <<EOF;
 EOF
 my @deliver_addr = sort { $hash_daddr{$b} <=> $hash_daddr{$a} } keys %hash_daddr;
 my $d; for my $item (@deliver_addr) { print  "|$hash_daddr{$item} => $item\n"; last if ++$d == 20; }
+
+
+print <<EOF;
+|							|
+|=======================================================|
+|        Top 20 blocked thanks to spamhaus.org
+|=======================================================|
+|Number of Times => hostname or IP			|
+EOF
+my @spam_host = sort { $spam_hostname{$b} <=> $spam_hostname{$a} } keys %spam_hostname;
+my $s; for my $item (@spam_host) { print  "|$spam_hostname{$item} => $item\n"; last if ++$s == 20; }
+
 
 #return total time it took to run this script
 my ($user,$system,$cuser,$csystem) = times;
