@@ -51,11 +51,12 @@ my $ip_adder  = qr{
 
 
 #variables use for the data collection
-my %c;
+my %count;
 my %message_ids;
 my %spam_hostname;
 my %hash_raddr;
 my %hash_daddr;
+my %hash_rejects;
 
 
 #creating the date variable
@@ -95,7 +96,7 @@ while (<>)
                 $match = lc $match;
 		#add to our hash the result
 		#the hash keys are same name as the string match
-                $c{$match}++;
+                $count{$match}++;
 		
 		#if we recieved from someone
                 if ($match eq "<=")
@@ -107,6 +108,8 @@ while (<>)
 			$received_address ||= "local";
 			#lets add to our hash the info we got
                         $hash_raddr{$received_address}++;
+
+			#print Dumper \%hash_raddr, "\n";
                     }
                 }
 
@@ -125,7 +128,6 @@ while (<>)
 			if (my ($id) = /(.{6}\-.{6}\-.{2})/)
 			{
 				$message_ids{$id}++;
-				#print Dumper \%message_ids, "\n";
 		
 			}
 		}
@@ -137,6 +139,16 @@ while (<>)
 			{
 				$spam_hostname{$spamgroup}++;
 			#	print Dumper \%spam_hostname, "\n";
+			}
+		}
+
+		#who are the top rejected ips?
+		if ($match eq " rejected")
+		{
+			if (my ($rejects) = /($ip_adder)/)
+			{
+				$hash_rejects{$rejects}++;
+				#print Dumper \%hash_rejects, "\n";
 			}
 		}
 
@@ -169,26 +181,26 @@ print <<EOF;
 |                       EXIM REPORT                     |
 |                       $date
 |=======================================================|
-|mail sent                	|$c{"=>"}
+|mail sent                	|$count{"=>"}
 |-------------------------------|-----------------------|
-|mail recieved            	|$c{"<="}
+|mail recieved            	|$count{"<="}
 |-------------------------------|-----------------------|
 |frozen mail messages    	|$unique_message_id_count
 |-------------------------------|-----------------------|
-|unsolicited mail       	|$c{unsolicited}
+|unsolicited mail       	|$count{unsolicited}
 |-------------------------------|-----------------------|
-|mail rejected		        |$c{" rejected"}
+|mail rejected		        |$count{" rejected"}
 |-------------------------------|-----------------------|
 |Number of mail rejected        |$unique_spamhaus_count
 |because it was in spamhaus.org |                       |
 |-------------------------------|-----------------------|
-|Number of times Google         |$c{"rate limited"}
+|Number of times Google         |$count{"rate limited"}
 |rate limited us                |                       |
 |=======================================================|
 |							|
 |							|
 |=======================================================|
-|        Top 20 RECEIVED mail FROM ip addresses         |
+|        Top 20 sending hosts (message count)	        |
 |=======================================================|
 |Number of Times => IP Address				|
 EOF
@@ -202,7 +214,7 @@ my $i; for my $item (@received_addr) { print  "|$hash_raddr{$item} => $item\n"; 
 print <<EOF;
 |							|
 |=======================================================|
-|        Top 20 DELIVERED mail TO ip addresses 	        |
+|        Top 20 host destinations (message count)       |
 |=======================================================|
 |Number of Times => IP Address				|
 EOF
@@ -213,12 +225,23 @@ my $d; for my $item (@deliver_addr) { print  "|$hash_daddr{$item} => $item\n"; l
 print <<EOF;
 |							|
 |=======================================================|
-|        Top 20 blocked thanks to spamhaus.org
+|        Top 20 sending hosts blocked by spamhaus.org
 |=======================================================|
 |Number of Times => hostname or IP			|
 EOF
 my @spam_host = sort { $spam_hostname{$b} <=> $spam_hostname{$a} } keys %spam_hostname;
 my $s; for my $item (@spam_host) { print  "|$spam_hostname{$item} => $item\n"; last if ++$s == 20; }
+
+
+print <<EOF;
+|							|
+|=======================================================|
+|        Top 20 rejected IPs (message count)
+|=======================================================|
+|Number of Times => hostname or IP			|
+EOF
+my @reject_host = sort { $hash_rejects{$b} <=> $hash_rejects{$a} } keys %hash_rejects;
+my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; last if ++$s == 20; }
 
 
 #return total time it took to run this script
