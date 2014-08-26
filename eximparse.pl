@@ -241,7 +241,7 @@ print <<EOF;
 |Number of Times => hostname or IP			|
 EOF
 my @reject_host = sort { $hash_rejects{$b} <=> $hash_rejects{$a} } keys %hash_rejects;
-my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; last if ++$s == 20; }
+my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; last if ++$r == 20; }
 
 
 #return total time it took to run this script
