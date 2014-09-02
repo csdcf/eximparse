@@ -89,8 +89,8 @@ while (<>)
         $old_file_name = $ARGV;
         $last_date = $date;
 
-        #string match
-	for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|[fF]rozen)/g)
+        #string match, some of the strings have spaces because I want to match it in log with spaces
+	for my $match (/( rejected|spamhaus|unsolicited|rate limited|=>|<=|[fF]rozen| delayed )/g)
         {
 		#lower case all matches for consistency
                 $match = lc $match;
@@ -196,6 +196,8 @@ print <<EOF;
 |-------------------------------|-----------------------|
 |Number of times Google         |$count{"rate limited"}
 |rate limited us                |                       |
+|-------------------------------|-----------------------|
+|mail delayed		        |$count{" delayed "}
 |=======================================================|
 |							|
 |							|
