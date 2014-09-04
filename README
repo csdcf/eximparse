@@ -19,18 +19,18 @@ SHOULD HAVE:
 * Total frozen mail messages
 	capture [Ff]rozen
 
-* Total unsolicited mail
-	google count: #
+* Total "unsolicited" mail
+	"google" count: #
 
 * Total mail rejected
-	unroutable: #
-	spamhaus.org: #
-	relay not permitted: #
+	"unroutable": #
+	"spamhaus.org": #
+	"relay not permitted": #
 	other: #
 
 
 * Number of mail messages delayed          
-	<= + delayed
+	<= + "delayed"
 
 * Messages received per hour
 	##:00 + <=
