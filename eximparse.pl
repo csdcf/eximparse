@@ -136,7 +136,7 @@ while (<>)
 		#who are the top spamhaus hosts?
 		if ($match eq "spamhaus")
 		{
-			if (my ($spamgroup) = /(H=(.*?)[ ])/)
+			if (my ($spamgroup) = /($ip_adder)/)
 			{
 				$spam_hostname{$spamgroup}++;
 			#	print Dumper \%spam_hostname, "\n";
