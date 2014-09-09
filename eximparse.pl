@@ -102,12 +102,13 @@ while (<>)
                 if ($match eq "<=")
                 {
 			#capture the ipaddress
-                    if (my ($received_address) = /<=.*?($ip_adder)/)
+		    if (my ($host, $ip) = / H= \( ([^)]*) \) [ ] \[ ($ip_adder) \] /x)
+                    #if (my ($received_address) = /<=.*?($ip_adder)/)
                     {
 			#if no ipaddr, its prob local so injecting local variable
-			$received_address ||= "local";
+			$host ||= "local";
 			#lets add to our hash the info we got
-                        $hash_raddr{$received_address}++;
+                        $hash_raddr{"$host ($ip)"}++;
 
 			#print Dumper \%hash_raddr, "\n";
                     }
