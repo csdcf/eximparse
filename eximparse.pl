@@ -145,9 +145,9 @@ while (<>)
 		#who are the top rejected ips?
 		if ($match eq " rejected")
 		{
-			if (my ($rejects) = /($ip_adder)/)
+			if (my ($host, $ip) = / H= \( ([^)]*) \) [ ] \[ ($ip_adder) \] /x)
 			{
-				$hash_rejects{$rejects}++;
+				$hash_rejects{"$host ($ip)"}++;
 				#print Dumper \%hash_rejects, "\n";
 			}
 		}
