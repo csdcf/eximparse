@@ -21,9 +21,6 @@ unless (@ARGV)
 	die "USAGE: $0 /pathto/exim.log /pathto/exim.log2\n";
 }
 
-#get file sizes to tell user
-print map { "Size of $_: " . -s . "\n" } @ARGV;
-
 #submodule logic for capturing ip address
 my $ip_octect = qr{
     [0-9]       |  #match 0 - 9
@@ -62,7 +59,14 @@ my %hash_rejects;
 #creating the date variable
 my $date= strftime '%D %T', localtime;
 
+
+
 print "Generating a report, hold your horses... (aprx 120sec/per 800M) \n";
+
+#get file sizes to tell user
+print map { "Size of $_: " . -s . "\n" } @ARGV;
+
+print "Hostnames are displayed for your convience but they can be spoofed, EXIM suggest you rely on IP instead. \n";
 
 
 # Collecting data
@@ -116,10 +120,13 @@ while (<>)
 
                 if ($match eq "=>")
                 {
-                    if (my ($deliver_address) = /=>.*?($ip_adder)/)
+		    if (my ($host, $ip) = / H= \( ([^)]*) \) [ ] \[ ($ip_adder) \] /x)
+                    #if (my ($deliver_address) = /=>.*?($ip_adder)/)
                     {
-			$deliver_address ||= "local";
-                        $hash_daddr{$deliver_address}++;
+			#$deliver_address ||= "local";
+                        #$hash_daddr{$deliver_address}++;
+			$host ||= "local";
+                        $hash_daddr{"$host ($ip)"}++;
                     }
                 }
 	
@@ -203,7 +210,7 @@ print <<EOF;
 |							|
 |							|
 |=======================================================|
-|        Top 20 sending hosts (message count)	        |
+|        Top 20 received from hosts (message count)  	|
 |=======================================================|
 |Number of Times => IP Address				|
 EOF
@@ -228,7 +235,7 @@ my $d; for my $item (@deliver_addr) { print  "|$hash_daddr{$item} => $item\n"; l
 print <<EOF;
 |							|
 |=======================================================|
-|        Top 20 sending hosts blocked by spamhaus.org
+|   Top 20 received from hosts blocked by spamhaus.org	|
 |=======================================================|
 |Number of Times => hostname or IP			|
 EOF
@@ -241,7 +248,7 @@ print <<EOF;
 |=======================================================|
 |        Top 20 rejected IPs (message count)
 |=======================================================|
-|Number of Times => hostname or IP			|
+|Number of Times => hostname IP				|
 EOF
 my @reject_host = sort { $hash_rejects{$b} <=> $hash_rejects{$a} } keys %hash_rejects;
 my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; last if ++$r == 20; }
