@@ -64,7 +64,7 @@ my $date= strftime '%D %T', localtime;
 print "Generating a report, hold your horses... (aprx 120sec/per 800M) \n";
 
 #get file sizes to tell user
-print map { "Size of $_: " . -s . "\n" } @ARGV;
+print map { "Size of $_: " . -s , "\n" } @ARGV;
 
 print "Hostnames are displayed for your convience but they can be spoofed, EXIM suggest you rely on IP instead. \n";
 
