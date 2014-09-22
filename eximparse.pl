@@ -185,34 +185,34 @@ print "$ARGV ends on $last_date\n";
 
 print <<EOF;
 
-|=======================================================|
-|                       EXIM REPORT                     |
+|=======================================================
+|                       EXIM REPORT                     
 |                       $date
-|=======================================================|
+|=======================================================
 |mail sent                	|$count{"=>"}
-|-------------------------------|-----------------------|
+|-------------------------------|-----------------------
 |mail recieved            	|$count{"<="}
-|-------------------------------|-----------------------|
+|-------------------------------|-----------------------
 |frozen mail messages    	|$unique_message_id_count
-|-------------------------------|-----------------------|
+|-------------------------------|-----------------------
 |unsolicited mail       	|$count{unsolicited}
-|-------------------------------|-----------------------|
+|-------------------------------|-----------------------
 |mail rejected		        |$count{" rejected"}
-|-------------------------------|-----------------------|
+|-------------------------------|-----------------------
 |Number of mail rejected        |$unique_spamhaus_count
-|because it was in spamhaus.org |                       |
-|-------------------------------|-----------------------|
+|because it was in spamhaus.org |                       
+|-------------------------------|-----------------------
 |Number of times Google         |$count{"rate limited"}
-|rate limited us                |                       |
-|-------------------------------|-----------------------|
+|rate limited us                |                       
+|-------------------------------|-----------------------
 |mail delayed		        |$count{" delayed "}
-|=======================================================|
-|							|
-|							|
-|=======================================================|
-|        Top 20 received from hosts (message count)  	|
-|=======================================================|
-|Number of Times => IP Address				|
+|=======================================================
+|							
+|							
+|=======================================================
+|        Top 20 received from hosts (message count)  	
+|=======================================================
+|Number of Times => IP Address				
 EOF
 
 #sorting and organizing the exim top recieved ips
@@ -222,33 +222,33 @@ my @received_addr = sort { $hash_raddr{$b} <=> $hash_raddr{$a} } keys %hash_radd
 my $i; for my $item (@received_addr) { print  "|$hash_raddr{$item} => $item\n"; last if ++$i == 20; }
 
 print <<EOF;
-|							|
-|=======================================================|
-|        Top 20 host destinations (message count)       |
-|=======================================================|
-|Number of Times => IP Address				|
+|							
+|=======================================================
+|        Top 20 host destinations (message count)       
+|=======================================================
+|Number of Times => IP Address				
 EOF
 my @deliver_addr = sort { $hash_daddr{$b} <=> $hash_daddr{$a} } keys %hash_daddr;
 my $d; for my $item (@deliver_addr) { print  "|$hash_daddr{$item} => $item\n"; last if ++$d == 20; }
 
 
 print <<EOF;
-|							|
-|=======================================================|
-|   Top 20 received from hosts blocked by spamhaus.org	|
-|=======================================================|
-|Number of Times => hostname or IP			|
+|							
+|=======================================================
+|   Top 20 received from hosts blocked by spamhaus.org	
+|=======================================================
+|Number of Times => hostname or IP			
 EOF
 my @spam_host = sort { $spam_hostname{$b} <=> $spam_hostname{$a} } keys %spam_hostname;
 my $s; for my $item (@spam_host) { print  "|$spam_hostname{$item} => $item\n"; last if ++$s == 20; }
 
 
 print <<EOF;
-|							|
-|=======================================================|
+|							
+|=======================================================
 |        Top 20 rejected IPs (message count)
-|=======================================================|
-|Number of Times => hostname IP				|
+|=======================================================
+|Number of Times => hostname IP				
 EOF
 my @reject_host = sort { $hash_rejects{$b} <=> $hash_rejects{$a} } keys %hash_rejects;
 my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; last if ++$r == 20; }
@@ -257,10 +257,10 @@ my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; 
 #return total time it took to run this script
 my ($user,$system,$cuser,$csystem) = times;
 print <<EOF;
-|							|
-|=======================================================|
+|							
+|=======================================================
 | Total processing time in seconds: $user
-|=======================================================|
+|=======================================================
 EOF
 
 
