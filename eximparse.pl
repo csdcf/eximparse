@@ -189,23 +189,23 @@ print <<EOF;
 |                       EXIM REPORT                     
 |                       $date
 |=======================================================
-|mail sent                	|$count{"=>"}
+|mail sent                	| $count{"=>"}
 |-------------------------------|-----------------------
-|mail recieved            	|$count{"<="}
+|mail recieved            	| $count{"<="}
 |-------------------------------|-----------------------
-|frozen mail messages    	|$unique_message_id_count
+|frozen mail messages    	| $unique_message_id_count
 |-------------------------------|-----------------------
-|unsolicited mail       	|$count{unsolicited}
+|unsolicited mail       	| $count{unsolicited}
 |-------------------------------|-----------------------
-|mail rejected		        |$count{" rejected"}
+|mail rejected		        | $count{" rejected"}
 |-------------------------------|-----------------------
-|Number of mail rejected        |$unique_spamhaus_count
-|because it was in spamhaus.org |                       
+|Number of mail rejected  because it was in spamhaus.org
+|				| $unique_spamhaus_count
 |-------------------------------|-----------------------
-|Number of times Google         |$count{"rate limited"}
-|rate limited us                |                       
+|Number of times Google  rate limited us
+|				| $count{"rate limited"}
 |-------------------------------|-----------------------
-|mail delayed		        |$count{" delayed "}
+|mail delayed		        | $count{" delayed "}
 |=======================================================
 |							
 |							
@@ -219,7 +219,7 @@ EOF
 #Putting b first will cause out to be sorted highest to lowest
 my @received_addr = sort { $hash_raddr{$b} <=> $hash_raddr{$a} } keys %hash_raddr;
 #the print portion has a preceding "|" so it lines ip with the EOF chart 
-my $i; for my $item (@received_addr) { print  "|$hash_raddr{$item} => $item\n"; last if ++$i == 20; }
+my $i; for my $item (@received_addr) { print  "| $hash_raddr{$item} => $item\n"; last if ++$i == 20; }
 
 print <<EOF;
 |							
@@ -229,7 +229,7 @@ print <<EOF;
 |Number of Times => IP Address				
 EOF
 my @deliver_addr = sort { $hash_daddr{$b} <=> $hash_daddr{$a} } keys %hash_daddr;
-my $d; for my $item (@deliver_addr) { print  "|$hash_daddr{$item} => $item\n"; last if ++$d == 20; }
+my $d; for my $item (@deliver_addr) { print  "| $hash_daddr{$item} => $item\n"; last if ++$d == 20; }
 
 
 print <<EOF;
@@ -240,7 +240,7 @@ print <<EOF;
 |Number of Times => hostname or IP			
 EOF
 my @spam_host = sort { $spam_hostname{$b} <=> $spam_hostname{$a} } keys %spam_hostname;
-my $s; for my $item (@spam_host) { print  "|$spam_hostname{$item} => $item\n"; last if ++$s == 20; }
+my $s; for my $item (@spam_host) { print  "| $spam_hostname{$item} => $item\n"; last if ++$s == 20; }
 
 
 print <<EOF;
@@ -251,7 +251,7 @@ print <<EOF;
 |Number of Times => hostname IP				
 EOF
 my @reject_host = sort { $hash_rejects{$b} <=> $hash_rejects{$a} } keys %hash_rejects;
-my $r; for my $item (@reject_host) { print  "|$hash_rejects{$item} => $item\n"; last if ++$r == 20; }
+my $r; for my $item (@reject_host) { print  "| $hash_rejects{$item} => $item\n"; last if ++$r == 20; }
 
 
 #return total time it took to run this script
