@@ -1,10 +1,11 @@
 #!/usr/bin/perl
+#Al Biheiri & Miles Davis
 
 
 
 
-
-$input_file = "/Users/abiheiri/Downloads/transactions";
+#$input_file = "/Users/abiheiri/Downloads/transactions";
+$input_file = $ARGV[0];
 open $input, "<", $input_file or die "could not open $input_file: $!";
 
 my %msgid;
@@ -31,7 +32,7 @@ while(<$input>) {
 
         next if $sender eq '<>';
         next unless $action eq "<=";
-	print "$month $day $time - $id [FROM]: $sender [TO]: ", $msgid{$id}->{'email'}, " [SUBJECT]: $subject\n";
+	print "$month $day $time , $id [FROM] $sender [TO] ", $msgid{$id}->{'email'}, " [SUBJECT]: $subject\n";
         $msgid{$id}->{'subject'} = $subject;
         $msgid{$id}->{'sender'} = $sender;
     }
