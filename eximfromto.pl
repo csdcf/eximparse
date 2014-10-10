@@ -31,7 +31,7 @@ while(<$input>) {
 
         next if $sender eq '<>';
         next unless $action eq "<=";
-	print "$id [FROM]: $sender [TO]: ", $msgid{$id}->{'email'}, " [SUBJECT]: $subject\n";
+	print "$month $day $time - $id [FROM]: $sender [TO]: ", $msgid{$id}->{'email'}, " [SUBJECT]: $subject\n";
         $msgid{$id}->{'subject'} = $subject;
         $msgid{$id}->{'sender'} = $sender;
     }
