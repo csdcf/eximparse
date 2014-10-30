@@ -4,7 +4,7 @@
 
 use strict;
 use warnings;
-use Data::Dumper;
+#use Data::Dumper;
 use POSIX qw/strftime/;
 
 #below can be used to protect myself
@@ -120,13 +120,14 @@ while (<>)
 
                 if ($match eq "=>")
                 {
-		    if (my ($host, $ip) = / H= \( ([^)]*) \) [ ] \[ ($ip_adder) \] /x)
+		    if (my ($host, $ip) = / H=([^)]*) [ ] \[ ($ip_adder) \] /x)
                     #if (my ($deliver_address) = /=>.*?($ip_adder)/)
                     {
 			#$deliver_address ||= "local";
                         #$hash_daddr{$deliver_address}++;
 			$host ||= "local";
                         $hash_daddr{"$host ($ip)"}++;
+			#print Dumper($host, $ip);
                     }
                 }
 	
